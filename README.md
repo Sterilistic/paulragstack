@@ -3,6 +3,9 @@
 
 A lightweight Retrieval Augmented Generation (RAG) system that provides intelligent search and analysis of Paul Graham's essays. Uses semantic search with embeddings and generates AI-powered insights across relevant essays.
 
+![image](https://github.com/user-attachments/assets/3cd84682-867b-44b9-83ff-399d98ac4741)
+
+
 ## Features
 
 - 🔍 Semantic search using sentence transformers
