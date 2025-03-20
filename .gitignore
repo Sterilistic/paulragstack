@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Log files
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Build directories
+/dist/
+/build/
+/out/
+/public/
+
+# Temporary files
+*.swp
+*.bak
+*.tmp
+
+# Coverage directory (for testing)
+coverage/
+
+# NPM and Yarn logs
+npm-debug.log
+yarn-error.log
+
