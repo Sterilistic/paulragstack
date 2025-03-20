@@ -85,22 +85,12 @@ Visit `http://localhost:3000` to use the application.
 3. Click through to read full essays
 
 ## Project Structure
-
-├── backend/
-│ ├── scraper.py # Scrapes PG essays
-│ ├── embeddings.py # Generates embeddings
-│ ├── main.py # FastAPI backend
-│ └── requirements.txt
-├── frontend/
-│ ├── app/ # Next.js pages
-│ ├── components/ # UI components
-│ └── lib/ # Utilities
-└── supabase/
-└── migrations/ # Database migrations
+![Screenshot 2025-03-20 at 10 33 12](https://github.com/user-attachments/assets/47c0bd3c-623a-4a74-80e2-bde4192dfab6)
 
 ## Environment Variables
 `SUPABASE_URL=your_supabase_url`
 `SUPABASE_KEY=your_supabase_key`
 `OPENAI_API_KEY=your_openai_key`
+
 
 
