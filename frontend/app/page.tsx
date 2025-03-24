@@ -109,10 +109,11 @@ export default function Home() {
         {results && (
           <div className="max-w-3xl mx-auto">
             {/* Key Insights Section */}
+            <h2 className="text-xl font-semibold text-gray-700 mb-6">
+              Key Insights
+            </h2>
             <div className="mb-12 bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Key Insights
-              </h2>
+              
               {loadingInsights ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
@@ -120,7 +121,7 @@ export default function Home() {
                 </div>
               ) : results.insights ? (
                 <div className="prose prose-gray max-w-none">
-                  {results.insights.split('•').map((insight, index) => (
+                  { results.insights && results.insights.split('•').map((insight: string, index: number) => (
                     insight.trim() && (
                       <div key={index} className="flex gap-2 mb-3">
                         <ul className="list-disc pl-5 text-gray-700">
