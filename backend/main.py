@@ -35,29 +35,19 @@ class SearchResponse(BaseModel):
     similarity: float
     summary: Optional[str] = None
 
-@app.post("/search")
-async def search_essays(query: SearchQuery):
-    # Create embedding for the search query
-    query_embedding = model.encode(query.query).tolist()
-    
-    # Perform similarity search using pgvector with lower threshold
-    result = supabase.rpc(
-        'match_essays',
-        {
-            'query_embedding': query_embedding,
-            'match_threshold': 0.3,
-            'match_count': query.limit
-        }
-    ).execute()
+@app.post("/insights")
+async def generate_insights(request: dict):
+    query = request["query"]
+    essays = request["essays"]
     
     # Generate consolidated insights from all relevant essays
     essays_context = "\n\n".join([
         f"Essay: {essay['title']}\n{essay['content'][:1000]}..."
-        for essay in result.data
+        for essay in essays
     ])
     
     insights_prompt = f"""
-    Analyze these relevant essays from Paul Graham in relation to the query: "{query.query}"
+    Analyze these relevant essays from Paul Graham in relation to the query: "{query}"
     Extract and synthesize the key insights, patterns, and advice across all these essays.
     
     {essays_context}
@@ -75,10 +65,28 @@ async def search_essays(query: SearchQuery):
         temperature=0.7,
         max_tokens=300
     )
-    # Add insights to the response
+    
     return {
-        "essays": result.data,
         "insights": response.choices[0].message.content.strip()
+    }
+
+@app.post("/search")
+async def search_essays(query: SearchQuery):
+    # Create embedding for the search query
+    query_embedding = model.encode(query.query).tolist()
+    
+    # Perform similarity search using pgvector
+    result = supabase.rpc(
+        'match_essays',
+        {
+            'query_embedding': query_embedding,
+            'match_threshold': 0.3,
+            'match_count': query.limit
+        }
+    ).execute()
+    
+    return {
+        "essays": result.data
     }
 
 @app.get("/essays")

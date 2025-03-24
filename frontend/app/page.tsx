@@ -16,17 +16,19 @@ interface SearchResult {
 
 interface SearchResponse {
   essays: SearchResult[]
-  insights: string
+  insights?: string
 }
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResponse | null>(null)
   const [loading, setLoading] = useState(false)
+  const [loadingInsights, setLoadingInsights] = useState(false)
 
   const handleSearch = async () => {
     if (!query.trim()) return
     setLoading(true)
+    setLoadingInsights(true)
     try {
       const response = await fetch('http://localhost:8000/search', {
         method: 'POST',
@@ -36,11 +38,30 @@ export default function Home() {
         body: JSON.stringify({ query, limit: 5 }),
       })
       const data = await response.json()
-      setResults(data)
+      setResults({ essays: data.essays })
+      
+      const insightsResponse = await fetch('http://localhost:8000/insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          query, 
+          essays: data.essays 
+        }),
+      })
+      const insightsData = await insightsResponse.json()
+      
+      setResults(prev => prev ? { 
+        ...prev, 
+        insights: insightsData.insights 
+      } : null)
     } catch (error) {
       console.error('Search failed:', error)
+    } finally {
+      setLoading(false)
+      setLoadingInsights(false)
     }
-    setLoading(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -92,17 +113,24 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Key Insights
               </h2>
-              <div className="prose prose-gray max-w-none">
-                {results.insights.split('•').map((insight, index) => (
-                  insight.trim() && (
-                    <div key={index} className="flex gap-2 mb-3">
-                      <ul className="list-disc pl-5 text-gray-700">
-                        <li>{insight.trim()}</li>
-                      </ul>
-                    </div>
-                  )
-                ))}
-              </div>
+              {loadingInsights ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                  <span className="ml-3 text-gray-600">Generating insights...</span>
+                </div>
+              ) : results.insights ? (
+                <div className="prose prose-gray max-w-none">
+                  {results.insights.split('•').map((insight, index) => (
+                    insight.trim() && (
+                      <div key={index} className="flex gap-2 mb-3">
+                        <ul className="list-disc pl-5 text-gray-700">
+                          <li>{insight.trim()}</li>
+                        </ul>
+                      </div>
+                    )
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <h2 className="text-xl font-semibold text-gray-700 mb-6">
