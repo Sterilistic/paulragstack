@@ -37,3 +37,5 @@ coverage/
 npm-debug.log
 yarn-error.log
 
+# next
+.next/
